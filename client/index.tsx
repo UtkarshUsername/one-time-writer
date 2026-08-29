@@ -51,9 +51,9 @@ function OneTimeWriter() {
     : "bg-white text-neutral-900";
 
   const chrome = dark ? "text-neutral-500" : "text-neutral-500";
+  const icon = dark ? "text-neutral-300" : "text-neutral-700";
   const border = dark ? "border-neutral-800" : "border-neutral-200";
   const borderFocus = dark ? "focus:border-white" : "focus:border-black";
-  const buttonBorder = dark ? "border-neutral-700" : "border-neutral-300";
 
   return (
     <main className={`flex min-h-screen ${page} px-6 py-8 selection:bg-amber-300 selection:text-black`}>
@@ -62,17 +62,17 @@ function OneTimeWriter() {
           <h1 className="text-3xl font-bold tracking-tight">One Time Writer</h1>
           <button
             aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-            className={`flex h-8 w-8 items-center justify-center border ${buttonBorder} ${chrome} hover:opacity-80`}
+            className={`flex h-8 w-8 items-center justify-center ${icon} hover:opacity-80`}
             onClick={() => setTheme(dark ? "light" : "dark")}
             type="button"
           >
             {dark ? (
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle cx="12" cy="12" r="4" />
                 <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
               </svg>
             ) : (
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
               </svg>
             )}
@@ -86,7 +86,7 @@ function OneTimeWriter() {
         <div className="flex items-center justify-end">
           <button
             aria-label={copied ? "Copied" : "Copy"}
-            className={`flex h-8 w-8 items-center justify-center border ${buttonBorder} ${copied ? "text-green-500" : chrome} disabled:cursor-not-allowed disabled:opacity-40`}
+            className={`flex h-8 w-8 items-center justify-center ${copied ? "text-green-500" : icon} disabled:cursor-not-allowed disabled:opacity-40`}
             disabled={!text}
             onClick={() => void copyText()}
             type="button"
@@ -96,7 +96,7 @@ function OneTimeWriter() {
                 <path d="M20 6 9 17l-5-5" />
               </svg>
             ) : (
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
               </svg>
