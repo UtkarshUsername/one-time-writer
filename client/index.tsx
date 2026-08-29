@@ -79,37 +79,37 @@ function OneTimeWriter() {
           </button>
         </header>
 
-        <p className={`mb-0 text-sm ${chrome}`}>
+        <p className={`mb-4 text-sm ${chrome}`}>
           Nothing here is saved. Leave, refresh, or close the tab and it is gone.
         </p>
 
-        <div className="flex items-center justify-end">
-          <button
-            aria-label={copied ? "Copied" : "Copy"}
-            className={`flex h-8 w-8 items-center justify-center ${copied ? "text-green-500" : icon} disabled:cursor-not-allowed disabled:opacity-40`}
-            disabled={!text}
-            onClick={() => void copyText()}
-            type="button"
-          >
-            {copied ? (
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M20 6 9 17l-5-5" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <rect x="9" y="9" width="13" height="13" rx="2" />
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>
-            )}
-          </button>
+        <div className="relative">
+          {text ? (
+            <button
+              aria-label={copied ? "Copied" : "Copy"}
+              className={`absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center ${copied ? "text-green-500" : icon}`}
+              onClick={() => void copyText()}
+              type="button"
+            >
+              {copied ? (
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              )}
+            </button>
+          ) : null}
+          <textarea
+            className={`min-h-[60vh] w-full flex-1 resize-none border ${border} ${borderFocus} bg-transparent p-6 pr-12 text-base leading-relaxed outline-none`}
+            placeholder="Write whatever you want"
+            value={text}
+            onInput={(event) => setText((event.target as HTMLTextAreaElement).value)}
+          />
         </div>
-
-        <textarea
-          className={`min-h-[60vh] w-full flex-1 resize-none border ${border} ${borderFocus} bg-transparent p-6 text-base leading-relaxed outline-none`}
-          placeholder="Write whatever you want"
-          value={text}
-          onInput={(event) => setText((event.target as HTMLTextAreaElement).value)}
-        />
 
         <footer className="mt-6 flex items-center justify-between gap-4">
           <span className={`text-xs ${chrome}`}>{text.length} characters</span>
