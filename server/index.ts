@@ -1,38 +1,13 @@
-import { boolean, capsule, endpoint, mutation, query, string, table, text } from "lakebed/server";
-import { cleanTodoText } from "../shared/todo";
+import { capsule } from "lakebed/server";
 
 export default capsule({
   name: "one-time-writer",
 
-  schema: {
-    todos: table({
-      text: string(),
-      done: boolean().default(false),
-      ownerId: string()
-    }).index("by_owner", ["ownerId"])
-  },
+  schema: {},
 
-  queries: {
-    todos: query(async (ctx) =>
-      ctx.db.todos
-        .withIndex("by_owner", (q) => q.eq("ownerId", ctx.auth.userId))
-        .order("desc")
-        .collect()
-    )
-  },
+  queries: {},
 
-  mutations: {
-    addTodo: mutation(async (ctx, text: string) => {
-      const cleanText = cleanTodoText(text);
-      if (!cleanText) {
-        return;
-      }
+  mutations: {},
 
-      await ctx.db.todos.insert({ text: cleanText, ownerId: ctx.auth.userId });
-    })
-  },
-
-  endpoints: {
-    status: endpoint({ method: "GET", path: "/api/status" }, () => text("ok"))
-  }
+  endpoints: {}
 });

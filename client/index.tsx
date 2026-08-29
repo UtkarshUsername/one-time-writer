@@ -1,117 +1,115 @@
-import { Link, Route, Router, Routes, SignInWithGoogle, signOut, useAuth, useMutation, useQuery } from "lakebed/client";
-import { useState } from "preact/hooks";
-import { cleanTodoText, type Todo } from "../shared/todo";
+import { useEffect, useState } from "preact/hooks";
 
-function AuthAvatar({ label, picture }: { label: string; picture?: string }) {
-  const initial = label.trim().slice(0, 1).toUpperCase() || "?";
+const STORAGE_KEY = "one-time-writer.theme";
 
-  if (picture) {
-    return (
-      <img
-        alt=""
-        className="h-7 w-7 shrink-0 rounded-full border border-neutral-800 bg-neutral-900 object-cover"
-        referrerPolicy="no-referrer"
-        src={picture}
-      />
-    );
+type Theme = "light" | "dark";
+
+function initialTheme(): Theme {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "light" || stored === "dark") {
+      return stored;
+    }
+  } catch {
+    // ignore
   }
-
-  return (
-    <span
-      aria-hidden="true"
-      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-neutral-800 bg-neutral-900 text-xs font-medium text-neutral-300"
-    >
-      {initial}
-    </span>
-  );
+  return window.matchMedia("(prefers-color-scheme: light)").matches
+    ? "light"
+    : "dark";
 }
 
-function TodoPage() {
-  const todos = useQuery<Todo[]>("todos");
-  const addTodo = useMutation<[text: string], void>("addTodo");
+function OneTimeWriter() {
+  const [theme, setTheme] = useState<Theme>(initialTheme);
+  const [text, setText] = useState("");
+  const [copied, setCopied] = useState(false);
 
-  async function onSubmit(event: SubmitEvent) {
-    event.preventDefault();
-    const form = event.currentTarget as HTMLFormElement;
-    const data = new FormData(form);
-    const text = cleanTodoText(String(data.get("text") ?? ""));
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+    } catch {
+      // ignore
+    }
+  }, [theme]);
+
+  const dark = theme === "dark";
+
+  async function copyText() {
     if (!text) {
       return;
     }
-
-    await addTodo(text);
-    form.reset();
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // clipboard unavailable; ignore
+    }
   }
 
-  return (
-    <section>
-      <h1 className="mb-8 text-5xl font-bold tracking-tight">one-time-writer</h1>
-      <form className="mb-8 flex gap-3" onSubmit={(event) => void onSubmit(event)}>
-        <input className="min-w-0 flex-1 border border-neutral-700 bg-black px-3 py-2 text-white outline-none focus:border-white" name="text" placeholder="Add a todo" />
-        <button className="border border-white px-4 py-2 font-medium" type="submit">Add</button>
-      </form>
-      <ul className="divide-y divide-neutral-800 border-y border-neutral-800">
-        {todos.map((todo) => (
-          <li className="py-3" key={todo.id}>{todo.text}</li>
-        ))}
-      </ul>
-    </section>
-  );
-}
+  const page = dark
+    ? "bg-black text-neutral-100"
+    : "bg-white text-neutral-900";
 
-function StatusPage() {
-  const [status, setStatus] = useState("not checked");
-
-  async function checkStatus() {
-    const response = await fetch("api/status");
-    setStatus(response.ok ? await response.text() : "error " + response.status);
-  }
+  const chrome = dark ? "text-neutral-500" : "text-neutral-500";
+  const border = dark ? "border-neutral-800" : "border-neutral-200";
+  const borderFocus = dark ? "focus:border-white" : "focus:border-black";
+  const buttonBorder = dark ? "border-neutral-700" : "border-neutral-300";
 
   return (
-    <section>
-      <h1 className="mb-4 text-4xl font-bold tracking-tight">Status</h1>
-      <p className="mb-6 text-neutral-400">This route calls the server endpoint at /api/status.</p>
-      <button className="border border-white px-4 py-2 font-medium" type="button" onClick={() => void checkStatus()}>
-        Check endpoint
-      </button>
-      <p className="mt-4 font-mono text-sm text-neutral-400">endpoint: {status}</p>
-    </section>
+    <main className={`flex min-h-screen ${page} px-6 py-8 selection:bg-amber-300 selection:text-black`}>
+      <div className="mx-auto flex w-full max-w-3xl flex-col">
+        <header className="mb-8 flex items-center justify-between gap-4">
+          <h1 className="text-3xl font-bold tracking-tight">One Time Writer</h1>
+          <button
+            aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+            className={`flex h-8 w-8 items-center justify-center border ${buttonBorder} ${chrome} hover:opacity-80`}
+            onClick={() => setTheme(dark ? "light" : "dark")}
+            type="button"
+          >
+            {dark ? (
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </button>
+        </header>
+
+        <p className={`mb-6 text-sm ${chrome}`}>
+          Nothing here is saved. Leave, refresh, or close the tab and it is gone.
+        </p>
+
+        <textarea
+          className={`min-h-[60vh] w-full flex-1 resize-none border ${border} ${borderFocus} bg-transparent p-6 text-base leading-relaxed outline-none`}
+          placeholder="Write whatever you want"
+          value={text}
+          onInput={(event) => setText((event.target as HTMLTextAreaElement).value)}
+        />
+
+        <footer className="mt-6 flex items-center justify-between gap-4">
+          <span className={`text-xs ${chrome}`}>{text.length} characters</span>
+          <button
+            className={`flex h-8 w-8 items-center justify-center border disabled:cursor-not-allowed disabled:opacity-40 ${buttonBorder} ${copied ? "text-amber-400" : ""}`}
+            aria-label={copied ? "Copied" : "Copy"}
+            disabled={!text}
+            onClick={() => void copyText()}
+            type="button"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
+        </footer>
+      </div>
+    </main>
   );
 }
 
 export function App() {
-  const auth = useAuth();
-  const authLabel = auth.displayName;
-  const authStatus = auth.isLoading && auth.isGuest ? "checking session" : "signed in as " + authLabel;
-
-  return (
-    <Router>
-      <main className="min-h-screen bg-black px-6 py-10 text-white">
-        <section className="mx-auto max-w-2xl">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-2">
-              {!auth.isLoading ? <AuthAvatar label={authLabel} picture={auth.picture} /> : null}
-              <p className="min-w-0 truncate font-mono text-sm text-neutral-500">{authStatus}</p>
-            </div>
-            {!auth.isLoading && auth.isGuest ? (
-              <SignInWithGoogle className="shrink-0 border border-neutral-700 px-3 py-1.5 text-sm font-medium text-neutral-200 hover:border-white hover:text-white" />
-            ) : !auth.isLoading ? (
-              <button className="shrink-0 text-sm text-neutral-400 hover:text-white" type="button" onClick={() => signOut()}>
-                Sign out
-              </button>
-            ) : null}
-          </div>
-          <nav className="mb-8 flex gap-4 text-sm text-neutral-400">
-            <Link className="hover:text-white" to="/">Todos</Link>
-            <Link className="hover:text-white" to="/status">Status</Link>
-          </nav>
-          <Routes>
-            <Route path="/" element={<TodoPage />} />
-            <Route path="/status" element={<StatusPage />} />
-            <Route path="*" element={<section><h1 className="mb-4 text-4xl font-bold">Not found</h1><Link className="text-neutral-300 hover:text-white" to="/">Back to todos</Link></section>} />
-          </Routes>
-        </section>
-      </main>
-    </Router>
-  );
+  return <OneTimeWriter />;
 }
