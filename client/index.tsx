@@ -79,7 +79,7 @@ function OneTimeWriter() {
           </button>
         </header>
 
-        <p className={`mb-4 text-sm ${chrome}`}>
+        <p className={`mb-0 text-sm ${chrome}`}>
           Nothing here is saved. Leave, refresh, or close the tab and it is gone.
         </p>
 
