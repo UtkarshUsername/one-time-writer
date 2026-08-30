@@ -40,6 +40,7 @@ function OneTimeWriter() {
   const icon = dark ? "text-neutral-300" : "text-neutral-700";
   const border = dark ? "border-neutral-800" : "border-neutral-200";
   const borderFocus = dark ? "focus:border-white" : "focus:border-black";
+  const placeholder = dark ? "placeholder:text-neutral-600" : "placeholder:text-neutral-400";
 
   return (
     <main className={`flex min-h-screen ${page} px-6 py-8 selection:bg-amber-300 selection:text-black`}>
@@ -71,7 +72,7 @@ function OneTimeWriter() {
 
         <div>
           <textarea
-            className={`min-h-[60vh] w-full flex-1 resize-none border ${border} ${borderFocus} bg-transparent p-6 text-base leading-relaxed outline-none`}
+            className={`min-h-[60vh] w-full flex-1 resize-none border ${border} ${borderFocus} ${placeholder} bg-transparent p-6 text-base leading-relaxed outline-none`}
             placeholder="Write whatever you want"
             value={text}
             onInput={(event) => setText((event.target as HTMLTextAreaElement).value)}
