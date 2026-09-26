@@ -72,6 +72,7 @@ function OneTimeWriter() {
 
         <div>
           <textarea
+            aria-label="Writing area"
             className={`min-h-[60vh] w-full flex-1 resize-none border ${border} ${borderFocus} ${placeholder} bg-transparent p-6 text-base leading-relaxed outline-none`}
             placeholder="Write whatever you want"
             value={text}
