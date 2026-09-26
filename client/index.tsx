@@ -102,7 +102,7 @@ function OneTimeWriter() {
 
         <footer className="mt-6 flex items-center justify-between gap-4">
           <span className={`text-xs ${chrome}`}>
-            {countCharacters(text)} characters · {countWords(text)} words
+            {countWords(text)} words · {countCharacters(text)} characters
           </span>
         </footer>
       </div>
