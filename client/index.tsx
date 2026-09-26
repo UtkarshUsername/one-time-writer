@@ -2,6 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 
 const STORAGE_KEY = "one-time-writer.theme";
 const characterSegmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+const wordSegmenter = new Intl.Segmenter(undefined, { granularity: "word" });
 
 type Theme = "light" | "dark";
 
@@ -9,6 +10,16 @@ function countCharacters(value: string): number {
   let count = 0;
   for (const _segment of characterSegmenter.segment(value)) {
     count++;
+  }
+  return count;
+}
+
+function countWords(value: string): number {
+  let count = 0;
+  for (const segment of wordSegmenter.segment(value)) {
+    if (segment.isWordLike) {
+      count++;
+    }
   }
   return count;
 }
@@ -90,7 +101,9 @@ function OneTimeWriter() {
         </div>
 
         <footer className="mt-6 flex items-center justify-between gap-4">
-          <span className={`text-xs ${chrome}`}>{countCharacters(text)} characters</span>
+          <span className={`text-xs ${chrome}`}>
+            {countCharacters(text)} characters · {countWords(text)} words
+          </span>
         </footer>
       </div>
     </main>
