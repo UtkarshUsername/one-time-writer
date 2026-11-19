@@ -7,7 +7,7 @@ export function App() {
   return (
     <main
       data-theme={theme}
-      className="group flex min-h-screen bg-white px-6 py-8 text-neutral-900
+      className="group/theme flex min-h-screen bg-white px-6 py-8 text-neutral-900
         selection:bg-amber-300 selection:text-black data-[theme=dark]:bg-black data-[theme=dark]:text-neutral-100"
     >
       <div className="mx-auto flex w-full max-w-3xl flex-col">

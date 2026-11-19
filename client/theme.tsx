@@ -32,13 +32,17 @@ export function useTheme() {
   return { theme, setTheme };
 }
 
-export function ThemeToggle({ theme, onChange }: { theme: Theme; onChange: (theme: Theme) => void }) {
+export function ThemeToggle({ theme, onChange }: {
+  theme: Theme;
+  onChange: (theme: Theme) => void;
+}) {
   const nextTheme = theme === "dark" ? "light" : "dark";
 
   return (
     <button
       aria-label={`Switch to ${nextTheme} mode`}
-      className="flex h-8 w-8 items-center justify-center text-neutral-700 hover:opacity-80 group-data-[theme=dark]:text-neutral-300"
+      className="flex h-8 w-8 items-center justify-center text-neutral-700
+        hover:opacity-80 group-data-[theme=dark]/theme:text-neutral-300"
       onClick={() => onChange(nextTheme)}
       type="button"
     >

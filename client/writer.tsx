@@ -33,8 +33,8 @@ export function Writer() {
         aria-label="Writing area"
         className="min-h-[60vh] w-full resize-none border border-neutral-200 bg-transparent
           p-6 text-base leading-relaxed outline-none placeholder:text-neutral-400 focus:border-black
-          group-data-[theme=dark]:border-neutral-800 group-data-[theme=dark]:placeholder:text-neutral-600
-          group-data-[theme=dark]:focus:border-white"
+          group-data-[theme=dark]/theme:border-neutral-800
+          group-data-[theme=dark]/theme:placeholder:text-neutral-600 group-data-[theme=dark]/theme:focus:border-white"
         placeholder="Write whatever you want"
         value={text}
         onInput={(event) => setText(event.currentTarget.value)}
